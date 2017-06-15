@@ -224,14 +224,14 @@
     if(samples[1,1]>max_x | samples[1,2]>max_y | samples[1,1]<min_x | samples[1,2]<min_y){temp <- outside(contour_matrix,samples[1,2],samples[1,1])
     } else {
       temp <- contour_matrix$z[which(x_diff==min(x_diff)),which(y_diff==min(y_diff))]
-      temp <- sum(contour_matrix$z[which(contour_matrix$z>temp)])
+      temp <- sum(contour_matrix$z[which(contour_matrix$z>=temp)])
       temp <- temp*(max_y-min_y)*(max_x-min_x)
       temp <- temp/(grid_size*grid_size)}
     
     return(temp)
   }
   
-  parenclitic <- function(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,CA125_col,HE4_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot=0,MK_col,auc_case)
+  parenclitic <- function(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot=0,Third_col,auc_case)
   {
     if(dir.exists(result_folder)==FALSE){dir.create(result_folder)}
     
@@ -313,7 +313,7 @@
         V(inet)$color="green"
       }
       
-      V(inet)$color[CA125_col-first_columns] <- "blue"
+      V(inet)$color[Best_col-first_columns] <- "blue"
       
       if(number_of_categoricals>0){
         V(inet)$color[(number_of_parameters+1):(number_of_parameters+number_of_categoricals)] <- "yellow"
@@ -362,11 +362,11 @@
       Results[1, 11] = mean(var_page_rank)# Index 9) MeanGoogle PageRank Score.
       
       var_authority_score = 0; # Kleinberg's centrality score.
-      var_authority_score = authority.score(inet)$vector
-      if(max(var_authority_score) > 0)
-        Results[1, 12] = max(var_authority_score) # Index 10) max Kleinberg's centrality score.
+      #var_authority_score = authority.score(inet)$vector
+      #if(max(var_authority_score) > 0)
+        #Results[1, 12] = max(var_authority_score) # Index 10) max Kleinberg's centrality score.
       
-      Results[1, 13] = mean(var_authority_score)# Index 11) Kleinberg's centrality score.
+     #Results[1, 13] = mean(var_authority_score)# Index 11) Kleinberg's centrality score.
       
       Results[1, 14] = sum(degree(inet)) # Index12) total number of connections.
       
@@ -376,11 +376,11 @@
       if(length(distance)>0){
         Results[1,16] = mean(distance)} #Index 14) mean distance from central population (above threshold).
       
-      Results[1,17] = sum(inet[(CA125_col-first_columns),]) #Index 15) Total number of connections to CA125
+      Results[1,17] = sum(inet[(Best_col-first_columns),]) #Index 15) Total number of connections to CA125
       
-      Results[1,18] = sum(inet[(HE4_col-first_columns),]) #Index 16) Total number of connections to HE4
+      Results[1,18] = sum(inet[(Second_col-first_columns),]) #Index 16) Total number of connections to HE4
       
-      Results[1,19] = sum(inet[(MK_col-first_columns),]) #Index 17) Total number of connections to MK
+      Results[1,19] = sum(inet[(Third_col-first_columns),]) #Index 17) Total number of connections to MK
       
       #Categorical variables
       if(number_of_categoricals>0){
@@ -412,9 +412,9 @@
     par(mar=c(1.4,1.4,1.4,1.4)*3)
     
     if(number_of_categoricals>0){
-      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance","Connections to CA125","Connections to HE4","Connections to MK",colnames(samples[(ncol(samples)-number_of_categoricals+1):ncol(samples)]))
+      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance","Connections to Best","Connections to Second","Connections to Third",colnames(samples[(ncol(samples)-number_of_categoricals+1):ncol(samples)]))
     } else {
-      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance","Connections to CA125","Connections to HE4","Connections to MK")
+      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance","Connections to Best","Connections to Second","Connections to Third")
     }
     
     
@@ -523,27 +523,30 @@
 #Variables to set and data
 {
   file_location <- "Data/"
-  result_folder <- "20170406_Density/"
-  file_name <- "OLINK_DISCOVERY_LATE_PCControlSet1and2_forweights.csv"
-  first_columns=8 #column number of first parameter -1
-  number_of_parameters=93 #Excluding categorical variables - these should be in columns at the end
-  column_of_case_control=4
+  result_folder <- "20170615_Density/"
+  file_name <- "Synthetic_WeightBaseCaseControl.csv"
+  first_columns=4 #column number of first parameter -1
+  number_of_parameters=30 #Excluding categorical variables - these should be in columns at the end
+  column_of_case_control=1
   case_number <- 1 #code for test cases.
   control_number <- 0 #code for control cases
   contour_number <- 2 #code for network controls
   auc_case <- 3 #Cases fro making the weights. This should be contour_number +1
-  number_of_categoricals <- 2
+  number_of_categoricals <- 9
   number_of_indexes <- 17
-  CA125_col <- 95
-  HE4_col <- 86
-  MK_col <- 65 #TSH
+  Best_col <- 5 #Best marker
+  Second_col <- 6 #second best marker
+  Third_col <- 7 #third best marker
   grid_size <- 16 #size of the density matrix grid (e.g. 10 = 10x10 grid)
   IndicesInModel <- 1 #the number of indices to include in the model
-  senstoset <- 0.9 #Set the specificity for logistic regression testing.
+  senstoset <- 0.95 #Set the specificity for logistic regression testing.
   TotalConnectionsPlot <- 1 #Plot graphs of total connections for each threshold (1=yes)
   
   data=read.csv(paste(file_location,file_name,sep=""),na.strings=c("NA","#VALUE!",""))
+  data <- data[,-35] #Removing a categorical that was artificially set to 100% accuracy.
+  data <- data[which(data$V3==9),] #Use only samples closest to diagnosis.
   
+  #Examply code for imputing missing values using Amelia algorithm.
   # #Impute Missing Values
   # set.seed=123
   # 
@@ -564,9 +567,9 @@
 
 #Program 
 {  
-  st=0.1 #starting threshold
+  st=0.5 #starting threshold
   d=0.05 #increments
-  loops=5
+  loops=1
   #number of iterations
   
   #Script
@@ -576,7 +579,7 @@
       
       threshold = (aucii_index-1)*d+st;
       
-      List_of_results <- parenclitic(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,CA125_col,HE4_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot,MK_col,auc_case)
+      List_of_results <- parenclitic(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot,Third_col,auc_case)
       
       aucii[aucii_index,1]=List_of_results$thres
       aucii[aucii_index,2]=List_of_results$auc
