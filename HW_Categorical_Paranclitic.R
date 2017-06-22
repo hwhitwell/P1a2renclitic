@@ -223,7 +223,7 @@
     
     if(samples[1,1]>max_x | samples[1,2]>max_y | samples[1,1]<min_x | samples[1,2]<min_y){temp <- outside(contour_matrix,samples[1,2],samples[1,1])
     } else {
-      temp <- contour_matrix$z[which(x_diff==min(x_diff)),which(y_diff==min(y_diff))]
+      temp <- min(contour_matrix$z[which(x_diff==min(x_diff)),which(y_diff==min(y_diff))])
       temp <- sum(contour_matrix$z[which(contour_matrix$z>=temp)])
       temp <- temp*(max_y-min_y)*(max_x-min_x)
       temp <- temp/(grid_size*grid_size)}
@@ -313,7 +313,7 @@
         V(inet)$color="green"
       }
       
-      V(inet)$color[Best_col-first_columns] <- "blue"
+      V(inet)$color[c(Best_col,Second_col, Third_col) - first_columns] <- "blue"
       
       if(number_of_categoricals>0){
         V(inet)$color[(number_of_parameters+1):(number_of_parameters+number_of_categoricals)] <- "yellow"
@@ -412,9 +412,9 @@
     par(mar=c(1.4,1.4,1.4,1.4)*3)
     
     if(number_of_categoricals>0){
-      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance","Connections to Best","Connections to Second","Connections to Third",colnames(samples[(ncol(samples)-number_of_categoricals+1):ncol(samples)]))
+      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance",paste("Connections to",bestmarker[1]),paste("Connections to", bestmarker[2]),paste("Connections to",bestmarker[3]),colnames(samples[(ncol(samples)-number_of_categoricals+1):ncol(samples)]))
     } else {
-      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance","Connections to Best","Connections to Second","Connections to Third")
+      top_labels=c("0","0","Max degree","Mean degree","inet efficiency","Max betweenness","Mean betweenness","Max closeness","Mean closeness", "Max Page.Rank", "Mean Page.Rank", "Max Max Keinberg's centrality", "Mean Max Keinberg's centrality","Total degree","Max Distance", "Mean Distance",paste("Connections to",bestmarker[1]),paste("Connections to", bestmarker[2]),paste("Connections to",bestmarker[3]))
     }
     
     
@@ -534,6 +534,7 @@
   auc_case <- 3 #Cases fro making the weights. This should be contour_number +1
   number_of_categoricals <- 9
   number_of_indexes <- 17
+  bestmarker <- c("X1","X2","X3") #names of top 3 single markers
   Best_col <- 5 #Best marker
   Second_col <- 6 #second best marker
   Third_col <- 7 #third best marker
@@ -579,7 +580,7 @@
       
       threshold = (aucii_index-1)*d+st;
       
-      List_of_results <- parenclitic(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot,Third_col,auc_case)
+      List_of_results <- parenclitic(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot,Third_col,auc_case,bestmarker)
       
       aucii[aucii_index,1]=List_of_results$thres
       aucii[aucii_index,2]=List_of_results$auc
