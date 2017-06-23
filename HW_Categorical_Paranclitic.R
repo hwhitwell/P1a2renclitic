@@ -238,7 +238,7 @@
     time1 <- now()
     samples <- subset(data,data[,column_of_case_control]==control_number|data[,column_of_case_control]==case_number)
     base_controls <- subset(data,data[column_of_case_control]==contour_number)
-    auc_samples <- subset(data,data[,column_of_case_control]==auc_case | data[,column_of_case_control]==contour_number)
+    
     
     print("Generating Contour Matrix")
     contour_matrix <- list(0)
@@ -251,11 +251,6 @@
       }
     }
     print(paste("Contour Matrix Completed",round(seconds(interval(time1,now())),2)))
-    
-    #Calculate weighting matrix
-    ParameterAUC <- apply(auc_samples[,(first_columns+1):(first_columns+number_of_parameters+number_of_categoricals)],2,function(x) auc(auc_samples[,column_of_case_control],x))
-    AUCMatrix <- matrix(ParameterAUC,(number_of_parameters+number_of_categoricals),1) %*% matrix(ParameterAUC,1,(number_of_parameters+number_of_categoricals))
-    
     
     Res<-matrix(0,1,2+number_of_indexes+number_of_categoricals) #This is to hold the topological indexes.
     Res2<-matrix(0,1,2+number_of_parameters+number_of_categoricals) #This is to hold the number of connections for each parameter.
@@ -291,8 +286,14 @@
         network <- rbind(network,network_extension)
       }
       
-      #Apply weights
-      network <- network*AUCMatrix
+      #Generate weigth subset, determin AUC, generaet matrix and apply to the network values.
+      if(is.na(auc_case)==F){
+        auc_samples <- subset(data,data[,column_of_case_control]==auc_case | data[,column_of_case_control]==contour_number)
+        ParameterAUC <- apply(auc_samples[,(first_columns+1):(first_columns+number_of_parameters+number_of_categoricals)],2,function(x) auc(auc_samples[,column_of_case_control],x))
+        AUCMatrix <- matrix(ParameterAUC,(number_of_parameters+number_of_categoricals),1) %*% matrix(ParameterAUC,1,(number_of_parameters+number_of_categoricals))
+        network <- network*AUCMatrix
+      }
+      
       
       distance <- network[which(network>threshold)]; #For making distance indexes (13 and 14)
       #network <- round(network,digits=4)
@@ -531,7 +532,7 @@
   case_number <- 1 #code for test cases.
   control_number <- 0 #code for control cases
   contour_number <- 2 #code for network controls
-  auc_case <- 3 #Cases fro making the weights. This should be contour_number +1
+  auc_case <- NA #Cases fro making the weights. This should be contour_number +1. NA = not using
   number_of_categoricals <- 9
   number_of_indexes <- 17
   bestmarker <- c("X1","X2","X3") #names of top 3 single markers
