@@ -14,6 +14,7 @@
   library(compiler)
   library(reshape)
   library(Amelia)
+  library(ks) # this is for bandwidth selection during 2DKDE
 }
 
 #Functions
@@ -247,7 +248,8 @@
     
     for(i in 1:number_of_parameters){
       for(j in 1:number_of_parameters){
-        contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j],n=grid_size)
+        bandwidth <- Hpi(base_controls[,c(first_columns+i,first_columns+j)],bgridsize=grid_size)
+        contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j],h=bandwidth,n=grid_size)
       }
     }
     print(paste("Contour Matrix Completed",round(seconds(interval(time1,now())),2)))
