@@ -21,9 +21,55 @@ end columns -> categorical variables if present.
 
 There should be no missing data. If missing data is present, these rows/columns should be removed or the data imputed.
 
+## Output files
+
+A number of output files are generated.
+Connections_XXX.csv = the number of connections each variable has for each individual.
+Connections_XXX.png = a plot of the number of connections each variable has for cases and controls.
+Contour_XXX_GridSize_YY.pdf = Networks for each individual.
+IndexValues_XXX_GridSize_XX.csv = The topological index values for each index for each individual. These are used to build logistic regression models.
+Results_XXX_GridSize_XX.pdf = XY plots of all combinations of pairs of topological indexes coded by case/control.
+aucii.csv = Results of regression models. If multiple thresholds are run, the best result for each threshold will be appended to the file.
+
+In aucii.csv, regression models are built based on topological indexes. The indexes in the models are indicated by a numerical code:
+
+3 = Max degree
+
+4 = Mean degree
+
+5 = Network efficiency
+
+6 = Max betweeness
+
+7 = Mean betweeness
+
+8 = Max closeness
+
+9 = Mean closeness
+
+10 = Max Google PageRank score
+
+11 = Mean Google PageRank score
+
+12 = Max Kleinberg's centrality score
+
+13 = Mean Kleinberg's centrality score
+
+14 = Total number of connections
+
+15 = Max distance
+
+16 = Mean distance
+
+17 = Total number of connections to best marker
+
+18 = Total number of connections to second best marker
+
+19 = Total number of connections to third best marker
+
 ## Tests
 
-An example data set (synthetic data) and results are provided. For infomation regarding the data, see (Whitwell 2017 - submitted).
+An example data set (synthetic data) and results (20160615_Density) are provided. For infomation regarding the data, see (Whitwell 2017 - submitted).
 
 ## Contributors
 

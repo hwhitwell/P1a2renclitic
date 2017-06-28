@@ -380,11 +380,11 @@
       if(length(distance)>0){
         Results[1,16] = mean(distance)} #Index 14) mean distance from central population (above threshold).
       
-      Results[1,17] = sum(inet[(Best_col-first_columns),]) #Index 15) Total number of connections to CA125
+      Results[1,17] = sum(inet[(Best_col-first_columns),]) #Index 15) Total number of connections to best marker
       
-      Results[1,18] = sum(inet[(Second_col-first_columns),]) #Index 16) Total number of connections to HE4
+      Results[1,18] = sum(inet[(Second_col-first_columns),]) #Index 16) Total number of connections to second best marker
       
-      Results[1,19] = sum(inet[(Third_col-first_columns),]) #Index 17) Total number of connections to MK
+      Results[1,19] = sum(inet[(Third_col-first_columns),]) #Index 17) Total number of connections to third best marker
       
       #Categorical variables
       if(number_of_categoricals>0){
