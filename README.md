@@ -28,8 +28,11 @@ An example data set (synthetic data) and results are provided. For infomation re
 ## Contributors
 
 Dr Harry J Whitwell
+
 Dr Oleg Blyuss
+
 Dr John F Timms
+
 Prof Alexey Zaikin
 
 ## License
