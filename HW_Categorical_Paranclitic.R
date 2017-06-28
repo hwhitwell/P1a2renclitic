@@ -50,7 +50,7 @@ source("Functions/functions.R")
 {  
   st=0.5 #starting threshold
   d=0.05 #increments
-  loops=2
+  loops=1
   #number of iterations
   
   #Script

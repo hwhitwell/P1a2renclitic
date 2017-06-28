@@ -247,7 +247,7 @@
     
     for(i in 1:number_of_parameters){
       for(j in 1:number_of_parameters){
-        bandwidth <- Hpi(base_controls[,c(first_columns+i,first_columns+j)],bgridsize=grid_size)
+        bandwidth <- apply(base_controls[,c(first_columns+i,first_columns+j)],2,function(x)1.06*sd(x)*(length(x)^(1/5)))
         contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j], h=bandwidth, n=grid_size)
       }
     }
