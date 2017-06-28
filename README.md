@@ -24,11 +24,17 @@ There should be no missing data. If missing data is present, these rows/columns 
 ## Output files
 
 A number of output files are generated.
+
 Connections_XXX.csv = the number of connections each variable has for each individual.
+
 Connections_XXX.png = a plot of the number of connections each variable has for cases and controls.
+
 Contour_XXX_GridSize_YY.pdf = Networks for each individual.
+
 IndexValues_XXX_GridSize_XX.csv = The topological index values for each index for each individual. These are used to build logistic regression models.
+
 Results_XXX_GridSize_XX.pdf = XY plots of all combinations of pairs of topological indexes coded by case/control.
+
 aucii.csv = Results of regression models. If multiple thresholds are run, the best result for each threshold will be appended to the file.
 
 In aucii.csv, regression models are built based on topological indexes. The indexes in the models are indicated by a numerical code:
