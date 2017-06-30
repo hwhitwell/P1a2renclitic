@@ -159,7 +159,7 @@
       near_mu <- nearest_y - mu_y
       x_exact <- mu_x + ((x-mu_x) / (samp_mu/near_mu))
       x_diff <- abs(x_exact - ContourMatrix$x)
-      nearest_x <- ContourMatrix$x[which(x_diff==min(x_diff))]
+      nearest_x <- min(ContourMatrix$x[which(x_diff==min(x_diff))])
     }
     
     if(sector=="lower"){
@@ -168,7 +168,7 @@
       near_mu <- nearest_y - mu_y
       x_exact <- mu_x + ((x-mu_x) / (samp_mu/near_mu))
       x_diff <- abs(x_exact - ContourMatrix$x)
-      nearest_x <- ContourMatrix$x[which(x_diff==min(x_diff))]
+      nearest_x <- min(ContourMatrix$x[which(x_diff==min(x_diff))])
     }
     
     if(sector=="left"){
@@ -177,7 +177,7 @@
       near_mu <- nearest_x - mu_x
       y_exact <- mu_y + ((y-mu_y) / (samp_mu/near_mu))
       y_diff <- abs(y_exact - ContourMatrix$y)
-      nearest_y <- ContourMatrix$y[which(y_diff==min(y_diff))]
+      nearest_y <- min(ContourMatrix$y[which(y_diff==min(y_diff))])
     }
     
     if(sector=="right"){
@@ -186,7 +186,7 @@
       near_mu <- nearest_x - mu_x
       y_exact <- mu_y + ((y-mu_y) / (samp_mu/near_mu))
       y_diff <- abs(y_exact - ContourMatrix$y)
-      nearest_y <- ContourMatrix$y[which(y_diff==min(y_diff))]
+      nearest_y <- min(ContourMatrix$y[which(y_diff==min(y_diff))])
     }
     
     #Calculate distance
