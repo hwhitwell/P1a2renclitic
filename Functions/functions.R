@@ -13,7 +13,6 @@
   library(compiler)
   library(reshape)
   library(Amelia)
-  library(ks) # this is for bandwidth selection during 2DKDE
 }
 
 #Functions
@@ -247,8 +246,17 @@
     
     for(i in 1:number_of_parameters){
       for(j in 1:number_of_parameters){
-        bandwidth <- apply(base_controls[,c(first_columns+i,first_columns+j)],2,function(x)1.06*sd(x)*(length(x)^(1/5)))
-        contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j], h=bandwidth, n=grid_size)
+        #If interquartile range = 0, then use 1.06*sigma*n^1/5. Otherwise use bandwidth.nrd
+        if(
+          quantile(base_controls[,c(first_columns+i)],0.25)==quantile(base_controls[,c(first_columns+i)],0.75) |
+          quantile(base_controls[,c(first_columns+j)],0.25)==quantile(base_controls[,c(first_columns+j)],0.74)
+        ){
+          bandwidth <- apply(base_controls[,c(first_columns+i,first_columns+j)],2,function(x)1.06*sd(x)*(length(x)^(1/5)))
+          contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j], h=bandwidth, n=grid_size)
+        } else {
+          contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j], n=grid_size)
+        }
+        
       }
     }
     print(paste("Contour Matrix Completed",round(seconds(interval(time1,now())),2)))

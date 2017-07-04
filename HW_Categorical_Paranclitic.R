@@ -27,7 +27,7 @@ source("Functions/functions.R")
   data <- data[,-35] #Removing a categorical that was artificially set to 100% accuracy.
   data <- data[which(data$V3==9),] #Use only samples closest to diagnosis.
   
-  #Examply code for imputing missing values using Amelia algorithm.
+  #Example code for imputing missing values using Amelia algorithm.
   # #Impute Missing Values
   # set.seed=123
   # 
