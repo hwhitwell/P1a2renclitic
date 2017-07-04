@@ -1,17 +1,17 @@
 ## Synopsis
 
-Biomarker networks based topological analysis of parenclitic networks. The networks are constructed by identifying pairs of variables
+Biomarker modelling based on topological analysis of parenclitic networks. The networks are constructed by identifying pairs of variables
 that deviate from a general population. This is achieved through the use of 2D kernal density estimation. The networks must be built using
-continuous data, but can incorporate categorical data as well. Paper submitted (Whitwell 2017). A single network in build per individual
-and predictive models are built based on topological features of the networks.
+continuous data, but can incorporate categorical data as well. Paper submitted (Whitwell 2017). A single network is built per individual
+and predictive models are constructed based on topological features of the networks.
 
 ## Installation
 
-The code can be run in R. "HW_Categorical_Parencltic.R" contains the code for the main program. In here, variables can be set and the file loaded. Detailed instructions are provided in the annotation. 
-The folder "Functions" should be present in the same directry as HW_Categorical_Parenclitic. This contains the functions that "HW_Categorical_Parenclitic" calls. Data should be in a .csv format and
+The code is implemented in R. "HW_Categorical_Parencltic.R" contains the code for the main program. In here, variables can be set and the file loaded. Detailed instructions are provided in the annotation. 
+The folder "Functions" should be present in the same directory as HW_Categorical_Parenclitic. This contains the functions that "HW_Categorical_Parenclitic" calls. Data should be in a .csv format and
 put into "Data" folder.
 
-The script was built and tested using R3.4.0 in RStudio 1.0.143
+The script was built and tested using R3.4.0 in RStudio 1.0.143 on Windows 10.
 
 Data: This should be in a .csv format and be layed out as follows:
 
