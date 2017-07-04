@@ -6,9 +6,9 @@ source("Functions/functions.R")
   #result_folder <- "20170615_Density/"
   result_folder <- "temp/" #For output
   file_name <- "Synthetic_WeightBaseCaseControl.csv"
-  first_columns=4 #column number of first parameter -1
-  number_of_parameters=30 #Excluding categorical variables - these should be in columns at the end
-  column_of_case_control=1 #Column that cases/controls are defined in.
+  first_columns <- 4 #column number of first parameter -1
+  number_of_parameters <- 30 #Excluding categorical variables - these should be in columns at the end
+  column_of_case_control <- 1 #Column that cases/controls are defined in.
   case_number <- 1 #code for test cases.
   control_number <- 0 #code for control cases
   contour_number <- 2 #code for network controls. These are used to building the underlying density distributions.
