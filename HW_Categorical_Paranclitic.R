@@ -1,19 +1,20 @@
 source("Functions/functions.R")
 
 #Variables to set and data
-{
+{ #Braces to collapse code section
   file_location <- "Data/"
-  result_folder <- "20170615_Density/"
+  #result_folder <- "20170615_Density/"
+  result_folder <- "temp/" #For output
   file_name <- "Synthetic_WeightBaseCaseControl.csv"
   first_columns=4 #column number of first parameter -1
   number_of_parameters=30 #Excluding categorical variables - these should be in columns at the end
-  column_of_case_control=1
+  column_of_case_control=1 #Column that cases/controls are defined in.
   case_number <- 1 #code for test cases.
   control_number <- 0 #code for control cases
-  contour_number <- 2 #code for network controls
+  contour_number <- 2 #code for network controls. These are used to building the underlying density distributions.
   auc_case <- 3 #Cases fro making the weights. This should be contour_number +1. NA = not using
   number_of_categoricals <- 9
-  number_of_indexes <- 17
+  number_of_indexes <- 17 #Parenclitic function contains 17 indicies. This should be left at 17 unless the function is edited.
   bestmarker <- c("X1","X2","X3") #names of top 3 single markers
   Best_col <- 5 #Best marker
   Second_col <- 6 #second best marker
@@ -23,9 +24,13 @@ source("Functions/functions.R")
   senstoset <- 0.95 #Set the specificity for logistic regression testing.
   TotalConnectionsPlot <- 1 #Plot graphs of total connections for each threshold (1=yes)
   
+  #Read in the data.
   data=read.csv(paste(file_location,file_name,sep=""),na.strings=c("NA","#VALUE!",""))
+  
+  #####FOR EXAMPLE DATA#####
   data <- data[,-35] #Removing a categorical that was artificially set to 100% accuracy.
   data <- data[which(data$V3==9),] #Use only samples closest to diagnosis.
+  ##########################
   
   #Example code for imputing missing values using Amelia algorithm.
   # #Impute Missing Values
@@ -37,21 +42,13 @@ source("Functions/functions.R")
   #                data_imp$imputations$imp4 +
   #                data_imp$imputations$imp5)/5
   # data[,(first_columns+1):ncol(data)] <- data_imp
-  # 
-  # #Generate Levels and Data sets
-  # data <- data[-which(data$Group=="BD Control"),];data <- droplevels(data)
-  # data$Group <- factor(data$Group,labels=c(1,0))
-  # data$Group <- as.numeric(as.character(data$Group))
-  # data$Group[sample(which(data$Group==0),340)] <- 2
-  # data$Group[sample(which(data$Group==1),20)] <- 3
 }
 
 #Program 
 {  
   st=0.5 #starting threshold
   d=0.05 #increments
-  loops=1
-  #number of iterations
+  loops=1 #number of iterations
   
   #Script
   {
@@ -71,11 +68,11 @@ source("Functions/functions.R")
     
     colnames(aucii) <- c("thres","auc","specificity","sensitivity","formula")
     
-    write.csv(aucii,file=paste(result_folder,"aucii.csv",sep=""),row.names=F)
+    write.csv(aucii,file=paste(result_folder,"aucii.csv",sep=""),row.names=F) #Contains results.
   }
 }
 
-#AUC and Sensitivity Graph
+#AUC and Sensitivity Graph - if a number of threshold have been tried, this generates a graph for visual selection of the optimal threshold.
 {
   data_thres_auc <- read.csv(paste(result_folder,"aucii.csv",sep=""))
   
