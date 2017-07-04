@@ -66,7 +66,7 @@
     return(temp)
   }
   
-  #For adding significance * to plots
+ #For adding significance * to plots
   func <- function(x)
   {
     if(is.na(x)==T){
@@ -81,8 +81,8 @@
     } else return(" ")
   }
   
-  #Calculation of AUC, Spec, Sens for data with 1st column outcome and other column - predictors
-  auc_spec_sens <- function(data,Spec)
+#Calculation of AUC, Spec, Sens for data with 1st column outcome and other column - predictors
+auc_spec_sens <- function(data,Spec)
   {colnames(data)[1]="output"
   mylogit=glm(output~.,data=data,family="binomial") #ERROR OCCURING HERE
   temp <- tryCatch(predict(mylogit,type="response",se=TRUE),error=function(e) 1) #This puts result to 0 if prediction fails
@@ -104,8 +104,8 @@
   return(res)
   }
   
-  #looking for parameters for best linear combination: Data - datafile, y - number of column with outcome, x - columns with predictors, x_max - maximal number of variables in the final model, type - "AUC" or "Sens" (in this case "Spec" value will be used)
-  best_comb_linear <- function(Data, y, x, num_ind, type, Spec)
+#looking for parameters for best linear combination: Data - datafile, y - number of column with outcome, x - columns with predictors, x_max - maximal number of variables in the final model, type - "AUC" or "Sens" (in this case "Spec" value will be used)
+best_comb_linear <- function(Data, y, x, num_ind, type, Spec)
   {sens_max=0
   spec_max=0
   auc_max=0
@@ -135,8 +135,8 @@
   res<-list(auc_max=auc_max, sens_max=sens_max, spec_max=spec_max, ind_max=ind_max)
   }
   
-  #Calculates the "density" value for points outside the kernal density estimation.
-  outside <- function(ContourMatrix=contour_matrix[[1]][[2]][[1]],x,y)
+#Calculates the "density" value for points outside the kernal density estimation.
+outside <- function(ContourMatrix=contour_matrix[[1]][[2]][[1]],x,y)
   {#x and y co-ordinate of the most dense point
     mu_x <-  ContourMatrix$x[which(ContourMatrix$z==max(ContourMatrix$z),arr.ind=T)[1]]
     mu_y <-  ContourMatrix$y[which(ContourMatrix$z==max(ContourMatrix$z),arr.ind=T)[2]]
@@ -212,8 +212,8 @@
     return(dens_val)
   }; outside <- cmpfun(outside)
   
-  #Calculates density estimation for each covariate pair in case/controls.
-  contour_calculation <- function(contour_matrix,samples,grid_size)
+#Calculates density estimation for each covariate pair in case/controls.
+contour_calculation <- function(contour_matrix,samples,grid_size)
   {
     max_x <- max(contour_matrix$x)
     max_y <- max(contour_matrix$y)
@@ -222,7 +222,6 @@
     x_diff <- abs(samples[1,1]-contour_matrix$x)
     y_diff <- abs(samples[1,2]-contour_matrix$y)
     
-
     if(samples[1,1]>max_x | samples[1,2]>max_y | samples[1,1]<min_x | samples[1,2]<min_y){temp <- outside(contour_matrix,samples[1,2],samples[1,1])
     } else {
       temp <- min(contour_matrix$z[which(x_diff==min(x_diff)),which(y_diff==min(y_diff))])
@@ -233,8 +232,8 @@
     return(temp)
   }
   
-  #Calls all other functions, performs network analysis and generates results files
-  parenclitic <- function(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot=0,Third_col,auc_case,bestmarker)
+#Calls all other functions, performs network analysis and generates results files
+parenclitic <- function(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot=0,Third_col,auc_case,bestmarker)
   {
     if(dir.exists(result_folder)==FALSE){dir.create(result_folder)}
     
@@ -250,7 +249,16 @@
     
     for(i in 1:number_of_parameters){
       for(j in 1:number_of_parameters){
-        contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j],n=grid_size)
+        #If interquartile range = 0, then use 1.06*sigma*n^1/5. Otherwise use bandwidth.nrd
+        if(
+          quantile(base_controls[,c(first_columns+i)],0.25)==quantile(base_controls[,c(first_columns+i)],0.75) |
+          quantile(base_controls[,c(first_columns+j)],0.25)==quantile(base_controls[,c(first_columns+j)],0.74)
+        ){
+          bandwidth <- apply(base_controls[,c(first_columns+i,first_columns+j)],2,function(x)1.06*sd(x)*(length(x)^(1/5)))
+          contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j], h=bandwidth, n=grid_size)
+        } else {
+          contour_matrix[[1]][[i]][[j]] <- kde2d(base_controls[,first_columns+i],base_controls[,first_columns+j], n=grid_size)
+        }        
       }
     }
     print(paste("Contour Matrix Completed",round(seconds(interval(time1,now())),2)))
