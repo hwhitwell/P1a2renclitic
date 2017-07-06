@@ -80,6 +80,7 @@ source("Functions/functions.R")
     geom_point(shape=1, size=2, colour="red") +
     xlab("Threshold") +
     ylab("Sensitivity") +
+    ylim(c(0,1)) +
     ggtitle("Sensitivity") +
     theme(title=element_text(size=8))
   
@@ -87,6 +88,7 @@ source("Functions/functions.R")
     geom_point(shape=1, size=2, colour="red") +
     xlab("Threshold") +
     ylab("AUC") +
+    ylim(c(0,1)) +
     ggtitle("AUC") +
     theme(title=element_text(size=8))
   
