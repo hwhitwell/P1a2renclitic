@@ -21,7 +21,7 @@ source("Functions/functions.R")
   Third_col <- 7 #third best marker
   grid_size <- 16 #size of the density matrix grid (e.g. 10 = 10x10 grid)
   IndicesInModel <- 1 #the number of indices to include in the model
-  senstoset <- 0.95 #Set the specificity for logistic regression testing.
+  spectoset <- 0.95 #Set the specificity for logistic regression testing.
   TotalConnectionsPlot <- 1 #Plot graphs of total connections for each threshold (1=yes)
   
   #Read in the data.
@@ -57,7 +57,7 @@ source("Functions/functions.R")
       
       threshold = (aucii_index-1)*d+st;
       
-      List_of_results <- parenclitic(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot,Third_col,auc_case,bestmarker)
+      List_of_results <- parenclitic(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,spectoset,TotalConnectionsPlot,Third_col,auc_case,bestmarker)
       
       aucii[aucii_index,1]=List_of_results$thres
       aucii[aucii_index,2]=List_of_results$auc
@@ -80,14 +80,14 @@ source("Functions/functions.R")
     geom_point(shape=1, size=2, colour="red") +
     xlab("Threshold") +
     ylab("Sensitivity") +
-    ggtitle("PC Controls \n Late cases") +
+    ggtitle("Sensitivity") +
     theme(title=element_text(size=8))
   
   auc <- ggplot(data_thres_auc, aes(x=thres, y=auc)) +
     geom_point(shape=1, size=2, colour="red") +
     xlab("Threshold") +
     ylab("AUC") +
-    ggtitle("PC Controls \n Late cases") +
+    ggtitle("AUC") +
     theme(title=element_text(size=8))
   
   plot_grid(sens,auc)  

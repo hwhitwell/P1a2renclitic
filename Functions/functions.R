@@ -233,7 +233,6 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
   }
   
 #Calls all other functions, performs network analysis and generates results files
-parenclitic <- function(data,result_folder,first_columns,number_of_parameters,column_of_case_control,case_number,control_number,contour_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,senstoset,TotalConnectionsPlot=0,Third_col,auc_case,bestmarker)
   {
     if(dir.exists(result_folder)==FALSE){dir.create(result_folder)}
     
@@ -497,7 +496,7 @@ parenclitic <- function(data,result_folder,first_columns,number_of_parameters,co
     }
     
     number_of_indices<-IndicesInModel #NUMBER OF INDICES YOU WANT TO CHOOSE   
-    comb<- best_comb_linear(Res, 2, 3:ncol(Res), number_of_indices, "Sens", senstoset)
+    comb<- best_comb_linear(Res, 2, 3:ncol(Res), number_of_indices, "Sens", spectoset)
     A<- "Res[,2]~"
     for (i in 1:number_of_indices)
       A<-paste(A, "+Res[,",comb$ind_max[i],"]")
@@ -517,7 +516,7 @@ parenclitic <- function(data,result_folder,first_columns,number_of_parameters,co
     perf1<-performance(pred1,"tpr","fpr")
     auc1 <- performance(pred1,"auc")
     
-    ind=which((1-perf1@x.values[[1]])>=senstoset)
+    ind=which((1-perf1@x.values[[1]])>=spectoset)
     num=ind[length(ind)]
     spec=1-perf1@x.values[[1]][num]
     sens=perf1@y.values[[1]][num]
