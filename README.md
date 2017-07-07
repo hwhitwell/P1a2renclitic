@@ -11,6 +11,8 @@ The code is implemented in R. "HW_Categorical_Parencltic.R" contains the code fo
 The folder "Functions" should be present in the same directory as HW_Categorical_Parenclitic. This contains the functions that "HW_Categorical_Parenclitic" calls. Data should be in a .csv format and
 put into "Data" folder.
 
+The libraries that are required are listed in Functions/functions.R.
+
 The script was built and tested using R3.4.0 in RStudio 1.0.143 on Windows 10.
 
 Data: This should be in a .csv format and be layed out as follows:

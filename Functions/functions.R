@@ -81,10 +81,10 @@
     } else return(" ")
   }
   
-#Calculation of AUC, Spec, Sens for data with 1st column outcome and other column - predictors
+#Calculation of AUC, Spec, Sens for data with 1st column outcome and other columns predictors.
 auc_spec_sens <- function(data,Spec)
   {colnames(data)[1]="output"
-  mylogit=glm(output~.,data=data,family="binomial") #ERROR OCCURING HERE
+  mylogit=glm(output~.,data=data,family="binomial")
   temp <- tryCatch(predict(mylogit,type="response",se=TRUE),error=function(e) 1) #This puts result to 0 if prediction fails
   if (is.numeric(temp)==T){
     res <- list(auc=0,spec=0,sens=0)
@@ -104,7 +104,7 @@ auc_spec_sens <- function(data,Spec)
   return(res)
   }
   
-#looking for parameters for best linear combination: Data - datafile, y - number of column with outcome, x - columns with predictors, x_max - maximal number of variables in the final model, type - "AUC" or "Sens" (in this case "Spec" value will be used)
+#looking for best linear combination: Data - datafile, y - outcome column number, x - predictor(s) column number(s), num_ind - number of indicies to include in the model, type - "AUC" or "Sens", Spec - fixed specificty for sensitivity calculation.
 best_comb_linear <- function(Data, y, x, num_ind, type, Spec)
   {sens_max=0
   spec_max=0
@@ -238,16 +238,16 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
     
     time1 <- now()
     samples <- subset(data,data[,column_of_case_control]==control_number|data[,column_of_case_control]==case_number)
-    base_controls <- subset(data,data[column_of_case_control]==contour_number)
+    base_controls <- subset(data,data[column_of_case_control]==base_number)
     
     
     print("Generating Contour Matrix")
     contour_matrix <- list(0)
-    contour_matrix <- list(replicate(number_of_parameters,contour_matrix))
-    contour_matrix <- list(replicate(number_of_parameters,contour_matrix))
+    contour_matrix <- list(replicate(number_of_continuous,contour_matrix))
+    contour_matrix <- list(replicate(number_of_continuous,contour_matrix))
     
-    for(i in 1:number_of_parameters){
-      for(j in 1:number_of_parameters){
+    for(i in 1:number_of_continuous){
+      for(j in 1:number_of_continuous){
         #If interquartile range = 0, then use 1.06*sigma*n^1/5. Otherwise use bandwidth.nrd
         if(
           quantile(base_controls[,c(first_columns+i)],0.25)==quantile(base_controls[,c(first_columns+i)],0.75) |
@@ -263,7 +263,7 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
     print(paste("Contour Matrix Completed",round(seconds(interval(time1,now())),2)))
     
     Res<-matrix(0,1,2+number_of_indexes+number_of_categoricals) #This is to hold the topological indexes.
-    Res2<-matrix(0,1,2+number_of_parameters+number_of_categoricals) #This is to hold the number of connections for each parameter.
+    Res2<-matrix(0,1,2+number_of_continuous+number_of_categoricals) #This is to hold the number of connections for each parameter.
     
     #Generate the network for each sample.
     print(paste("Generating Paranclitic Networks, Threshold=",threshold))
@@ -273,17 +273,17 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
     par(mar=c(1,1,1,1)*1)
     
     for(women_index in 1:nrow(samples)){
-      network=matrix(0,number_of_parameters,number_of_parameters+number_of_categoricals)
-      for(i in 1:number_of_parameters){
-        for(j in 1:number_of_parameters){
+      network=matrix(0,number_of_continuous,number_of_continuous+number_of_categoricals)
+      for(i in 1:number_of_continuous){
+        for(j in 1:number_of_continuous){
           if(j!=i){
             network[i,j] <- contour_calculation(contour_matrix[[1]][[i]][[j]],samples[women_index,c(first_columns+i,first_columns+j)],grid_size)
           }
         }
       }
       if(number_of_categoricals>0){
-        for(i in (number_of_parameters+1):(number_of_parameters+number_of_categoricals)){
-          for(j in 1:number_of_parameters){
+        for(i in (number_of_continuous+1):(number_of_continuous+number_of_categoricals)){
+          for(j in 1:number_of_continuous){
             network[j,i] <- cat_cal(grid_size,women_index,(i+first_columns),(j+first_columns),base_controls,samples)
           }
         } 
@@ -291,16 +291,16 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
       
       #To make network square
       if(number_of_categoricals>0){
-        network_extension <- t(network[,(number_of_parameters+1):(number_of_parameters+number_of_categoricals)])
+        network_extension <- t(network[,(number_of_continuous+1):(number_of_continuous+number_of_categoricals)])
         network_extension <- cbind(network_extension,matrix(0,number_of_categoricals,number_of_categoricals))
         network <- rbind(network,network_extension)
       }
       
-      #Generate weigth subset, determin AUC, generaet matrix and apply to the network values.
+      #Generate weight subset, determin AUC, generaet matrix and apply to the network values.
       if(is.na(auc_case)==F){
-        auc_samples <- subset(data,data[,column_of_case_control]==auc_case | data[,column_of_case_control]==contour_number)
-        ParameterAUC <- apply(auc_samples[,(first_columns+1):(first_columns+number_of_parameters+number_of_categoricals)],2,function(x) auc(auc_samples[,column_of_case_control],x))
-        AUCMatrix <- matrix(ParameterAUC,(number_of_parameters+number_of_categoricals),1) %*% matrix(ParameterAUC,1,(number_of_parameters+number_of_categoricals))
+        auc_samples <- subset(data,data[,column_of_case_control]==auc_case | data[,column_of_case_control]==base_number)
+        ParameterAUC <- apply(auc_samples[,(first_columns+1):(first_columns+number_of_continuous+number_of_categoricals)],2,function(x) auc(auc_samples[,column_of_case_control],x))
+        AUCMatrix <- matrix(ParameterAUC,(number_of_continuous+number_of_categoricals),1) %*% matrix(ParameterAUC,1,(number_of_continuous+number_of_categoricals))
         network <- network*AUCMatrix
       }
       
@@ -310,8 +310,8 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
       
       network <- ifelse(network-threshold>0.0,1,0)
       
-      for(i in 1:number_of_parameters){
-        for(j in 1:number_of_parameters){
+      for(i in 1:number_of_continuous){
+        for(j in 1:number_of_continuous){
           network[i,j]=max(network[i,j],network[j,i])
         }
       }
@@ -327,7 +327,7 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
       V(inet)$color[c(Best_col,Second_col, Third_col) - first_columns] <- "blue"
       
       if(number_of_categoricals>0){
-        V(inet)$color[(number_of_parameters+1):(number_of_parameters+number_of_categoricals)] <- "yellow"
+        V(inet)$color[(number_of_continuous+1):(number_of_continuous+number_of_categoricals)] <- "yellow"
       }
       
       plot.igraph(inet,layout=layout.fruchterman.reingold,vertex.size=10,edge.color="black",main=paste(women_index,"--",samples[women_index,1],"--",samples[women_index,"Name"],"_",samples[women_index,"Early.Late"]))
@@ -349,7 +349,7 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
       
       if(length(shortest_paths) > 0)
       {
-        Results[1,5] = mean(1/shortest_paths)*length(shortest_paths)/((number_of_parameters)*((number_of_parameters)-1))
+        Results[1,5] = mean(1/shortest_paths)*length(shortest_paths)/((number_of_continuous)*((number_of_continuous)-1))
       } else {
         Results[1,5] = 0 # Index 3) inetwork efficiency.
       }
@@ -372,6 +372,7 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
       
       Results[1, 11] = mean(var_page_rank)# Index 9) MeanGoogle PageRank Score.
       
+      #This index is currently not working. Possibly due to R-version incompatibilities. Default to return 0.
       var_authority_score = 0; # Kleinberg's centrality score.
       #var_authority_score = authority.score(inet)$vector
       #if(max(var_authority_score) > 0)
@@ -396,14 +397,14 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
       #Categorical variables
       if(number_of_categoricals>0){
         for (i in 1:number_of_categoricals){
-          Results[1,(2+number_of_indexes+i)] <- as.character(samples[women_index,(first_columns+number_of_parameters+i)])
+          Results[1,(2+number_of_indexes+i)] <- as.character(samples[women_index,(first_columns+number_of_continuous+i)])
         }
       }
       
       Res=rbind(Res,Results[1,])
       
       #Calculate The Number of Connections Between Each Marker
-      Results2<-matrix(0,1,2+number_of_parameters+number_of_categoricals)
+      Results2<-matrix(0,1,2+number_of_continuous+number_of_categoricals)
       Results2[1, 1] = as.character(samples[women_index, 1])
       Results2[1, 2] = samples[women_index, column_of_case_control]
       
@@ -445,7 +446,7 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
     
     #Genereate Total Connections Plot
     if(TotalConnectionsPlot==1){
-      colnames(Res2) <- c("PromiseID","CaseControl",colnames(samples)[(first_columns+1):(first_columns+number_of_parameters+number_of_categoricals)])
+      colnames(Res2) <- c("PromiseID","CaseControl",colnames(samples)[(first_columns+1):(first_columns+number_of_continuous+number_of_categoricals)])
       Res2 <- Res2[-1,]
       write.csv(Res2, paste(result_folder,"Connections_",threshold,".csv",sep=""),row.names=F)
       
