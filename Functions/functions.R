@@ -233,6 +233,7 @@ contour_calculation <- function(contour_matrix,samples,grid_size)
   }
   
 #Calls all other functions, performs network analysis and generates results files
+  parenclitic <- function(data,result_folder,first_columns,number_of_continuous,column_of_case_control,case_number,control_number,base_number,threshold,number_of_categoricals,number_of_indexes,Best_col,Second_col,grid_size,IndicesInModel,spectoset,TotalConnectionsPlot,Third_col,auc_case,bestmarker)
   {
     if(dir.exists(result_folder)==FALSE){dir.create(result_folder)}
     
