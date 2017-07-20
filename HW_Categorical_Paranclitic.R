@@ -69,6 +69,10 @@ source("Functions/functions.R")
   
   colnames(aucii) <- c("thres","auc","specificity","sensitivity","formula")
   
+  if(file.exists(paste0(result_folder,"aucii.csv"))==T){
+    temp <- as.matrix(read.csv(paste0(result_folder,"aucii.csv")))
+    aucii <- rbind(temp,aucii)
+  }
   write.csv(aucii,file=paste(result_folder,"aucii.csv",sep=""),row.names=F) #Contains results.
 }
 
